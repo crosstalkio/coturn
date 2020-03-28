@@ -63,8 +63,8 @@ RUN apk update \
 COPY --from=builder /usr/bin/turnserver /usr/bin/
 
 EXPOSE 3478 3479 3478/udp 3479/udp
-EXPOSE 49152-65535 49152-65535/udp
+EXPOSE 49152-65535/udp
 
-VOLUME ["/var/lib/coturn"]
+VOLUME ["/var/lib/redis"]
 
 CMD ["/usr/bin/turnserver", "-n", "--log-file=stdout"]
