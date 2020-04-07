@@ -1,54 +1,18 @@
+GOFILES := go.mod $(wildcard *.go) $(wildcard */*.go) $(wildcard */*/*.go)
 
-CODENAME := $(shell basename $(shell pwd))
-IMAGE_NAME := crosstalkio/$(CODENAME)
-REPO_NAME ?= crosstalkio/$(CODENAME)
-VERSION ?= $(subst v,,$(shell git describe --tags --exact-match 2>/dev/null || echo ""))
+all:
+	go build .
 
-# Build docker image.
-#
-# Usage:
-#	make docker/build [no-cache=(no|yes)]
+tidy:
+	go mod tidy
 
-docker/build:
-	docker build --network=host --force-rm \
-		$(if $(call eq,$(no-cache),yes),--no-cache --pull,) \
-		-t $(IMAGE_NAME) \
-		-f Dockerfile \
-		.
+clean:
+	rm -f go.sum
 
-# Run docker image.
-#
-# Usage:
-#	make docker/run
+test: # -count=1 disables cache
+	go test -v -race -count=1 .
 
-docker/run:
-	docker run -it --rm \
-		--name=$(CODENAME) \
-		--network=host \
-		$(IMAGE_NAME)
+.PHONY: all tidy clean test
 
-# Tag docker images.
-#
-# Usage:
-#	make docker/tag [VERSION=<image-version>]
-
-docker/tag:
-	docker tag $(IMAGE_NAME) $(REPO_NAME):latest
-ifneq ($(VERSION),)
-	docker tag $(IMAGE_NAME) $(REPO_NAME):$(VERSION)
-endif
-
-# Push docker images.
-#
-# Usage:
-#	make docker/push
-
-docker/push:
-	docker push $(REPO_NAME):latest
-ifneq ($(VERSION),)
-	docker push $(REPO_NAME):$(VERSION)
-endif
-
-docker: docker/build docker/tag docker/push
-
-.PHONY: docker/build docker/run docker/tag docker/push docker
+include .make/lint.mk
+include .make/docker.mk
