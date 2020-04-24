@@ -7,7 +7,7 @@ import (
 
 	"github.com/crosstalkio/coturn"
 	"github.com/crosstalkio/log"
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v7"
 )
 
 type redisUserDB struct {
