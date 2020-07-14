@@ -1,4 +1,4 @@
-FROM alpine:3.11 as builder
+FROM alpine:3.12 as builder
 
 # Build and install Coturn
 RUN apk update \
@@ -21,7 +21,7 @@ RUN apk update \
     \
  # Download and prepare sources
     && curl -fL -o /tmp/coturn.tar.gz \
-         https://github.com/coturn/coturn/archive/4.5.1.1.tar.gz \
+         https://github.com/coturn/coturn/archive/4.5.1.3.tar.gz \
     && tar -xzf /tmp/coturn.tar.gz -C /tmp/ \
     && cd /tmp/coturn-* \
     \
@@ -49,7 +49,7 @@ RUN apk update \
     && rm -rf /var/cache/apk/* \
            /tmp/*
 
-FROM alpine:3.11
+FROM alpine:3.12
 
  # Install runtime dependencies
 RUN apk update \
